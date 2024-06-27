@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Snake game</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css"
+    />
+  </head>
+  <style>
+    .area {
+      background-color: cadetblue;
+      position: relative;
+    }
+    .buttons {
+      width: 300px;
+      height: 300px;
+      display: grid;
+      gap: 0;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
+    }
+    .button {
+      width: 100%;
+      height: 100%;
+    }
+    .left {
+      grid-area: 2/1/3/2;
+    }
+    .down {
+      grid-area: 3/2/4/3;
+    }
+    .up {
+      grid-area: 1/2/2/3;
+    }
+    .right {
+      grid-area: 2/3/3/4;
+    }
+    .food {
+      width: 20px;
+      height: 20px;
+      background-color: red;
+      position: absolute;
+    }
+    .part {
+      width: 20px;
+      height: 20px;
+      background-color: blue;
+      position: absolute;
+      border-radius: 5px;
+    }
+  </style>
+  <body onkeydown="handleKeydown(event)">
+    <div class="area" id="area">
+      <div class="food" id="food"></div>
+      <div id="body">
+        <!-- generated -->
+      </div>
+    </div>
+    <div class="buttons">
+      <button class="button is-dark left" onclick="changeDirection(`left`)">
+        Left
+      </button>
+      <button class="button is-dark right" onclick="changeDirection(`right`)">
+        Right
+      </button>
+      <button class="button is-dark up" onclick="changeDirection(`up`)">
+        Up
+      </button>
+      <button class="button is-dark down" onclick="changeDirection(`down`)">
+        Down
+      </button>
+    </div>
+    <div id="score" class="box"></div>
+  </body>
+  <script>
+    const scale = 20;
+
+    const area = document.getElementById("area");
+    const foodEl = document.getElementById("food");
+
+    const areaWidth = 40;
+    const areaHeight = 16;
+
+    let positionX = 5;
+    let positionY = 5;
+
+    let score = 0;
+
+    let direction = "up";
+
+    const food = {
+      x: 5,
+      y: 5,
+    };
+    let bodyCoordinates = [
+      { x: 2, y: 5 },
+      { x: 3, y: 5 },
+      { x: 4, y: 5 },
+      { x: 5, y: 5 },
+    ];
+
+    function generateFood() {
+      food.x = Math.floor(Math.random() * areaWidth);
+      food.y = Math.floor(Math.random() * areaHeight);
+      foodEl.style.top = `${food.y * scale}px`;
+      foodEl.style.left = `${food.x * scale}px`;
+    }
+
+    const resetGame = () => {
+      area.style.width = `${areaWidth * scale}px`;
+      area.style.height = `${areaHeight * scale}px`;
+      score = 0;
+      bodyCoordinates = [
+        { x: 2, y: 5 },
+        { x: 3, y: 5 },
+        { x: 4, y: 5 },
+        { x: 5, y: 5 },
+      ];
+      direction = "right";
+      positionX = 5;
+      positionY = 5;
+      generateFood();
+    };
+
+    const handleKeydown = (event) => {
+      console.log(event.key);
+      switch (event.key) {
+        case "ArrowUp":
+        case "w":
+          changeDirection("up");
+          break;
+        case "ArrowDown":
+        case "s":
+          changeDirection("down");
+          break;
+        case "ArrowRight":
+        case "d":
+          changeDirection("right");
+          break;
+        case "ArrowLeft":
+        case "a":
+          changeDirection("left");
+          break;
+      }
+    };
+
+    const changeDirection = (value) => {
+      if (direction === "up" || direction === "down") {
+        if (value === "right" || value === "left") {
+          direction = value;
+        }
+      } else if (direction === "right" || direction === "left") {
+        if (value === "up" || value === "down") {
+          direction = value;
+        }
+      }
+    };
+
+    const goRight = () => {
+      positionX += 1;
+      if (positionX > areaWidth - 1) {
+        // positionX = 0;
+        gameOver();
+      }
+    };
+
+    const goLeft = () => {
+      positionX -= 1;
+      if (positionX < 0) {
+        // positionX = areaWidth - 1;
+        gameOver();
+      }
+    };
+    const goUp = () => {
+      positionY -= 1;
+      if (positionY < 0) {
+        // positionY = areaHeight - 1;
+        gameOver();
+      }
+    };
+
+    const goDown = () => {
+      positionY += 1;
+      if (positionY > areaHeight - 1) {
+        // positionY = 0;
+        gameOver();
+      }
+    };
+
+    const bodyContainer = document.getElementById("body");
+    const render = () => {
+      if (food.x === positionX && food.y === positionY) {
+        bodyCoordinates.unshift(bodyCoordinates[0]);
+        generateFood();
+        score += 5;
+        // foodCount++
+        // if (foodCount===5){generateBigFood()}
+        speed = speed - 1;
+        clearInterval(interval);
+        console.log({ speed });
+        interval = setInterval(gameLoop, speed);
+        document.getElementById("score").innerText = score;
+      }
+      
+      let bodyHtml = "";
+      for (let i = 0; i < bodyCoordinates.length; i++) {
+        bodyHtml += `<div class="part" style="top: ${
+          bodyCoordinates[i].y * scale
+        }px; left: ${bodyCoordinates[i].x * scale}px;"></div>`;
+      }
+      bodyContainer.innerHTML = bodyHtml;
+    };
+
+    const gameLoop = () => {
+      switch (direction) {
+        case "up":
+          goUp();
+          break;
+        case "down":
+          goDown();
+          break;
+        case "left":
+          goLeft();
+          break;
+        case "right":
+          goRight();
+      }
+
+      for (let i = 0; i < bodyCoordinates.length; i++) {
+        if (
+          positionX === bodyCoordinates[i].x &&
+          positionY === bodyCoordinates[i].y
+        ) {
+          gameOver();
+          break;
+        }
+      }
+
+      bodyCoordinates.push({ x: positionX, y: positionY });
+      bodyCoordinates.shift();
+      render();
+    };
+
+    function gameOver() {
+      alert("Game over!");
+      resetGame();
+    }
+
+    resetGame();
+
+    let speed = 250;
+
+    let interval = setInterval(gameLoop, speed);
+  </script>
+</html>
