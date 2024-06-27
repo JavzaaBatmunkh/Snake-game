@@ -13,6 +13,8 @@
     .area {
       background-color: cadetblue;
       position: relative;
+      margin-bottom: 20px;
+      margin-top: 20px;
     }
     .buttons {
       width: 300px;
@@ -47,9 +49,12 @@
     .part {
       width: 20px;
       height: 20px;
-      background-color: blue;
+      background-color: green;
       position: absolute;
       border-radius: 5px;
+    }
+    .box {
+      width: 300px;
     }
   </style>
   <body onkeydown="handleKeydown(event)">
@@ -59,6 +64,8 @@
         <!-- generated -->
       </div>
     </div>
+    <div id="score" class="box"></div>
+
     <div class="buttons">
       <button class="button is-dark left" onclick="changeDirection(`left`)">
         Left
@@ -73,7 +80,7 @@
         Down
       </button>
     </div>
-    <div id="score" class="box"></div>
+    
   </body>
   <script>
     const scale = 20;
@@ -81,7 +88,7 @@
     const area = document.getElementById("area");
     const foodEl = document.getElementById("food");
 
-    const areaWidth = 40;
+    const areaWidth = 20;
     const areaHeight = 16;
 
     let positionX = 5;
@@ -202,9 +209,9 @@
         clearInterval(interval);
         console.log({ speed });
         interval = setInterval(gameLoop, speed);
-        document.getElementById("score").innerText = score;
+        document.getElementById("score").innerText = `Your score: ${score}`;
       }
-      
+
       let bodyHtml = "";
       for (let i = 0; i < bodyCoordinates.length; i++) {
         bodyHtml += `<div class="part" style="top: ${
@@ -253,6 +260,6 @@
 
     let speed = 250;
 
-    let interval = setInterval(gameLoop, speed);
+    // let interval = setInterval(gameLoop, speed);
   </script>
 </html>
