@@ -15,6 +15,7 @@
       position: relative;
       margin-bottom: 20px;
       margin-top: 20px;
+      margin-left: 20px;
     }
     .buttons {
       width: 300px;
@@ -23,6 +24,7 @@
       gap: 0;
       grid-template-columns: 1fr 1fr 1fr;
       grid-template-rows: 1fr 1fr 1fr;
+      margin-left: 20px;
     }
     .button {
       width: 100%;
@@ -55,6 +57,14 @@
     }
     .box {
       width: 300px;
+      margin-left: 20px;
+    }
+    .container-button{
+      display: flex;
+      width: 300px;
+      margin-left: 20px;
+      margin-bottom: 20px;
+      gap: 20px;
     }
   </style>
   <body onkeydown="handleKeydown(event)">
@@ -65,6 +75,11 @@
       </div>
     </div>
     <div id="score" class="box"></div>
+
+    <div class="container-button">
+      <div class="button" onclick="pauseInterval()">Pause</div>
+      <div class="button" onclick="startInterval()">Play</div>
+    </div>
 
     <div class="buttons">
       <button class="button is-dark left" onclick="changeDirection(`left`)">
@@ -88,8 +103,8 @@
     const area = document.getElementById("area");
     const foodEl = document.getElementById("food");
 
-    const areaWidth = 20;
-    const areaHeight = 16;
+    const areaWidth = 25;
+    const areaHeight = 20;
 
     let positionX = 5;
     let positionY = 5;
@@ -258,8 +273,17 @@
 
     resetGame();
 
-    let speed = 250;
+    let speed = 200;
 
     let interval = setInterval(gameLoop, speed);
+
+    function pauseInterval(){
+      clearInterval(interval)
+    }
+
+    function startInterval(){
+      interval=setInterval(gameLoop, speed);
+      
+    }
   </script>
 </html>
